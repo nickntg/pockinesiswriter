@@ -1,4 +1,4 @@
-﻿namespace PocUnifiedLogWorker
+﻿namespace PocUnifiedLogWorkerCommon
 {
     public class EventData
     {

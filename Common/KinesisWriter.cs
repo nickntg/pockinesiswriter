@@ -9,7 +9,7 @@ using Amazon.Kinesis.Model;
 using log4net;
 using Newtonsoft.Json;
 
-namespace PocUnifiedLogWorker
+namespace PocUnifiedLogWorkerCommon
 {
     public class KinesisWriter
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PocUnifiedLogWorker
+namespace PocUnifiedLogWorkerCommon
 {
     public class UnifiedLogEvent
     {
