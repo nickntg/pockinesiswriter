@@ -1,3 +1,0 @@
-﻿sudo nano /etc/init.d/kinesiswriter
-<<< Write contents of kinesiswriter >>>
-sudo chmod 755 /etc/init.d/kinesiswriter
