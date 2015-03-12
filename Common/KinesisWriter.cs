@@ -33,7 +33,32 @@ namespace PocUnifiedLogWorkerCommon
                 }
                 catch (Exception ex)
                 {
-                    log.WarnFormat("File {0} could not be deserialized, error is [{1}], dir is {2}", file, ex, dir);
+                    var fileInfo = new FileInfo(file);
+                    if (fileInfo.CreationTime.Subtract(DateTime.Now).Seconds > Properties.Settings.Default.LockFileGraceSeconds)
+                    {
+                        // The file is older than the specified period, which (we assume) means that it's bad
+                        // and not simply a file that is currently being placed in the directory and the creator
+                        // has an exclusive lock on. In this case, we will try to move it to the error directory.
+
+                        log.WarnFormat("File {0} could not be deserialized, error is [{1}], dir is {2}", file, ex, dir);
+
+                        try
+                        {
+                            var newDir = Path.Combine(Properties.Settings.Default.ErrorDir, new DirectoryInfo(dir).Name);
+                            Directory.CreateDirectory(newDir);
+                            var newName = Path.Combine(newDir, fileInfo.Name);
+                            File.Move(file, newName);
+                            log.WarnFormat("File {0} moved to errors as {1}", fileInfo.Name, newName);
+                        }
+                        catch (Exception ex2)
+                        {
+                            log.ErrorFormat("File {0} could not be moved , error is [{1}], dir is {2}", file, ex2, dir);
+                        }
+                    }
+                    else
+                    {
+                        log.DebugFormat("File {0} could not be deserialized but we'll ignore it for now, error is [{1}], dir is {2}", file, ex, dir);
+                    }
                 }
                 if (processedFiles.Count >= Properties.Settings.Default.BlockSize)
                 {
@@ -49,8 +74,7 @@ namespace PocUnifiedLogWorkerCommon
             var putRecords = events.Select(evt => new PutRecordsRequestEntry
             {
                 PartitionKey = evt.KinesisInfo.PartitionKey,
-                Data =
-                    new MemoryStream(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(evt.UnifiedLogEvent)))
+                Data = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(evt.UnifiedLogEvent)))
             }).ToList();
 
             var streamName = events[0].KinesisInfo.StreamName;

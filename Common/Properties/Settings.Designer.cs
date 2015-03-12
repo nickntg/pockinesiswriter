@@ -49,5 +49,23 @@ namespace PocUnifiedLogWorkerCommon.Properties {
                 return ((int)(this["BlockSize"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\searches\\Errors")]
+        public string ErrorDir {
+            get {
+                return ((string)(this["ErrorDir"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public int LockFileGraceSeconds {
+            get {
+                return ((int)(this["LockFileGraceSeconds"]));
+            }
+        }
     }
 }
