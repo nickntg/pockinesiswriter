@@ -7,6 +7,11 @@ namespace PocUnifiedLogWorkerCommon
 {
     public class Worker
     {
+        public void WorkAsync()
+        {
+            Task.Factory.StartNew(Work);
+        }
+
         public void Work()
         {
             while (true)
